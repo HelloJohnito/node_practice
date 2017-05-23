@@ -3,20 +3,20 @@ var app = express();
 var bodyParser = require("body-parser");
 
 app.use(bodyParser.urlencoded({extended: true}));
-
 app.set("view engine", "ejs");
+
+
+var spacegrounds = [
+  {name: "Sal", image: "http://www.photosforclass.com/download/5518990239"},
+  {name: "gal", image: "http://www.photosforclass.com/download/5518991291"},
+  {name: "rainbow", image: "http://www.photosforclass.com/download/5519581506"}
+];
 
 app.get("/", function(req,res){
   res.render("home_page");
 });
 
 app.get("/spacegrounds", function(req, res){
-  var spacegrounds = [
-    {name: "Sal", image: "http://www.photosforclass.com/download/5518990239"},
-    {name: "gal", image: "http://www.photosforclass.com/download/5518991291"},
-    {name: "rainbow", image: "http://www.photosforclass.com/download/5519581506"}
-  ];
-
   res.render("spacegrounds_page", {spacegrounds: spacegrounds});
 });
 
@@ -25,7 +25,11 @@ app.get("/spacegrounds/new", function(req,res){
 });
 
 app.post("/spacegrounds", function(req, res){
-
+  var name = req.body.name;
+  var image = req.body.image;
+  var newSpaceground = {name: name, image: image};
+  spacegrounds.push(newSpaceground);
+  res.redirect("/spacegrounds");
 });
 
 
