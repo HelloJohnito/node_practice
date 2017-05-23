@@ -1,0 +1,12 @@
+<%include partials/header%>
+
+<h1>SpaceGrounds!</h1>
+
+<% spacegrounds.forEach(function(spaceground){ %>
+  <div>
+    <h4><%=spaceground.name%></h4>
+    <img src="<%= spaceground.image %>" />
+  </div>
+<% }); %>
+
+<%include partials/footer%>
