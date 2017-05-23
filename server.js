@@ -7,9 +7,9 @@ app.set("view engine", "ejs");
 
 
 var spacegrounds = [
-  {name: "Sal", image: "http://www.photosforclass.com/download/5518990239"},
-  {name: "gal", image: "http://www.photosforclass.com/download/5518991291"},
-  {name: "rainbow", image: "http://www.photosforclass.com/download/5519581506"}
+  {name: "Sal", image: "http://data.whicdn.com/images/45686773/superthumb.jpg"},
+  {name: "gal", image: "http://vignette1.wikia.nocookie.net/uncyclopedia/images/0/0c/Planets.jpg/revision/latest?cb=20170215154255"},
+  {name: "rainbow", image: "http://www.constellation-guide.com/wp-content/uploads/2011/07/Circinus-Galaxy-Supernova-SN-1996cr-300x250.jpg"}
 ];
 
 app.get("/", function(req,res){

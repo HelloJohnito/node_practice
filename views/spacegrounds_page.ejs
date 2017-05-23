@@ -1,12 +1,31 @@
 <%include partials/header%>
 
-<h1>SpaceGrounds!</h1>
 
-<% spacegrounds.forEach(function(spaceground){ %>
-  <div>
-    <h4><%=spaceground.name%></h4>
-    <img src="<%= spaceground.image %>" />
+
+<div class="container">
+  <header class="jumbotron">
+    <div class="container">
+      <h1>Welcome to SpaceGrounds!</h1>
+      <p>View our spaceworld</p>
+      <p>
+        <a class="btn btn-primary btn-large" href="/spacegrounds/new">Create new spaceground</a>
+      </p>
+    </div>
+  </header>
+
+
+  <div class="row text-center" style="display:flex; flex-wrap: wrap;">
+    <% spacegrounds.forEach(function(spaceground){ %>
+      <div class="col-md-3 col-sm-6">
+        <div class="thumbnail">
+          <img src="<%= spaceground.image %>" />
+          <div class="caption">
+            <h4><%=spaceground.name%></h4>
+          </div>
+        </div>
+      </div>
+    <% }); %>
   </div>
-<% }); %>
+</div>
 
 <%include partials/footer%>
