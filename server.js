@@ -14,7 +14,8 @@ app.set("view engine", "ejs");
 //SCHEMA Setup
 var spacegroundSchema = new mongoose.Schema({
   name: String,
-  image: String
+  image: String,
+  description: String
 });
 
 //Models
@@ -23,7 +24,8 @@ var Spaceground = mongoose.model("Spaceground", spacegroundSchema);
 // Spaceground.create(
 //   {
 //     name: "gal",
-//     image: "http://vignette1.wikia.nocookie.net/uncyclopedia/images/0/0c/Planets.jpg/revision/latest?cb=20170215154255"
+//     image: "http://vignette1.wikia.nocookie.net/uncyclopedia/images/0/0c/Planets.jpg/revision/latest?cb=20170215154255",
+//     description: "This is nice!"
 //   }, function(err, newlyCreated){
 //       if(err){
 //         console.log(err);
@@ -49,21 +51,38 @@ app.get("/spacegrounds", function(req, res){
     if(err){
       console.log(err);
     } else {
-      res.render("spacegrounds_page", {spacegrounds: allSpacegrounds});
+      res.render("index", {spacegrounds: allSpacegrounds});
     }
   });
 });
 
 //New Route
+// MUST BE IN FRONT OF SHOW ROUTES
 app.get("/spacegrounds/new", function(req,res){
   res.render("new");
+});
+
+//Show Route
+app.get("/spacegrounds/:id", function(req, res){
+  Spaceground.findById(req.params.id, function(err, foundSpaceground){
+    if(err){
+      console.log(err);
+    } else {
+        res.render("show", {spaceground: foundSpaceground});
+    }
+  });
 });
 
 //Create Route
 app.post("/spacegrounds", function(req, res){
   var name = req.body.name;
   var image = req.body.image;
-  var newSpaceground = {name: name, image: image};
+  var description = req.body.description;
+  var newSpaceground = {
+    name: name,
+    image: image,
+    description: description
+  };
 
   //create and push to the database
   Spaceground.create(newSpaceground, function(err, newlyCreated){
