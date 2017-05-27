@@ -1,9 +1,13 @@
-<%include partials/header%>
+<%include ../partials/header%>
 
 <h1><%=spaceground.name%></h1>
 
 <img src="<%= spaceground.image%>">
 <p><%=spaceground.description%></p>
+
+<p>
+  <a class= "btn btn-success" href="/spacegrounds/<%= spaceground._id%>/comments/new">Add new comments</a>
+</p>
 
 <% spaceground.comments.forEach(function(comment){ %>
   <p>
@@ -12,4 +16,4 @@
   </p>
 <% }); %>
 
-<%include partials/footer%>
+<%include ../partials/footer%>

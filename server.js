@@ -3,6 +3,7 @@ var express     = require("express"),
     bodyParser  = require("body-parser"),
     mongoose    = require("mongoose"),
     Spaceground = require("./models/spaceground"),
+    Comment     = require("./models/comment"),
     seedDB      = require("./seeds");
 
 
@@ -29,7 +30,7 @@ app.get("/spacegrounds", function(req, res){
     if(err){
       console.log(err);
     } else {
-      res.render("index", {spacegrounds: allSpacegrounds});
+      res.render("spacegrounds/index", {spacegrounds: allSpacegrounds});
     }
   });
 });
@@ -37,7 +38,7 @@ app.get("/spacegrounds", function(req, res){
 //New Route
 // MUST BE IN FRONT OF SHOW ROUTES
 app.get("/spacegrounds/new", function(req,res){
-  res.render("new");
+  res.render("spacegrounds/new");
 });
 
 //Show Route
@@ -48,8 +49,7 @@ app.get("/spacegrounds/:id", function(req, res){
       if(err){
         console.log(err);
       }else {
-        console.log(foundSpaceground);
-        res.render("show", {spaceground: foundSpaceground});
+        res.render("spacegrounds/show", {spaceground: foundSpaceground});
       }
     }
   );
@@ -77,6 +77,37 @@ app.post("/spacegrounds", function(req, res){
   });
 });
 
+//////////////////////////////////////////////////////
+// Comments Route
+
+app.get("/spacegrounds/:id/comments/new", function(req, res){
+  Spaceground.findById(req.params.id, function(err, spaceground){
+    if(err){
+      console.log(err);
+    } else {
+      res.render("comments/new", {spaceground: spaceground});
+    }
+  });
+});
+
+app.post("/spacegrounds/:id/comments", function(req, res){
+  Spaceground.findById(req.params.id, function(err, spaceground){
+    if(err){
+      console.log(err);
+      res.redirect("/spacegrounds");
+    }else {
+      Comment.create(req.body.comment, function(err2, comment){
+        if(err2){
+          console.log(err2);
+        }else {
+          spaceground.comments.push(comment);
+          spaceground.save();
+          res.redirect("/spacegrounds/" + spaceground._id);
+        }
+      });
+    }
+  });
+});
 
 app.listen("3000", function(){
   console.log("Server has started");
