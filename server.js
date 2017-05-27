@@ -11,7 +11,7 @@ var express     = require("express"),
 mongoose.Promise = global.Promise; // gets rid of deprecation error
 mongoose.connect("mongodb://localhost/camp");  //creates the mongodb
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(express.static("public")); //for css
+app.use(express.static(__dirname + "/public")); //for css
 app.set("view engine", "ejs");
 
 
