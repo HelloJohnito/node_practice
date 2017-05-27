@@ -1,45 +1,23 @@
-var express    = require("express"),
-    app        = express(),
-    bodyParser = require("body-parser"),
-    mongoose   = require("mongoose");
+var express     = require("express"),
+    app         = express(),
+    bodyParser  = require("body-parser"),
+    mongoose    = require("mongoose"),
+    Spaceground = require("./models/spaceground"),
+    seedDB      = require("./seeds");
 
 
-//creates the mongodb
-mongoose.connect("mongodb://localhost/camp");
-
+//APP CONFIG
+mongoose.Promise = global.Promise; // gets rid of deprecation error
+mongoose.connect("mongodb://localhost/camp");  //creates the mongodb
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.static("public")); //for css
 app.set("view engine", "ejs");
 
 
-//SCHEMA Setup
-var spacegroundSchema = new mongoose.Schema({
-  name: String,
-  image: String,
-  description: String
-});
+//seed data
+seedDB();
 
-//Models
-var Spaceground = mongoose.model("Spaceground", spacegroundSchema);
-
-// Spaceground.create(
-//   {
-//     name: "gal",
-//     image: "http://vignette1.wikia.nocookie.net/uncyclopedia/images/0/0c/Planets.jpg/revision/latest?cb=20170215154255",
-//     description: "This is nice!"
-//   }, function(err, newlyCreated){
-//       if(err){
-//         console.log(err);
-//       } else {
-//         console.log(newlyCreated);
-//       }
-//     }
-// );
-
-// var spacegrounds = [
-//   {name: "Sal", image: "http://data.whicdn.com/images/45686773/superthumb.jpg"},
-//   {name: "gal", image: "http://vignette1.wikia.nocookie.net/uncyclopedia/images/0/0c/Planets.jpg/revision/latest?cb=20170215154255"},
-//   {name: "rainbow", image: "http://www.constellation-guide.com/wp-content/uploads/2011/07/Circinus-Galaxy-Supernova-SN-1996cr-300x250.jpg"}
-// ];
+//ROUTES
 
 app.get("/", function(req,res){
   res.render("home_page");
@@ -64,14 +42,19 @@ app.get("/spacegrounds/new", function(req,res){
 
 //Show Route
 app.get("/spacegrounds/:id", function(req, res){
-  Spaceground.findById(req.params.id, function(err, foundSpaceground){
-    if(err){
-      console.log(err);
-    } else {
+
+  Spaceground.findById(req.params.id).populate("comments").exec(
+    function(err, foundSpaceground){
+      if(err){
+        console.log(err);
+      }else {
+        console.log(foundSpaceground);
         res.render("show", {spaceground: foundSpaceground});
+      }
     }
-  });
+  );
 });
+
 
 //Create Route
 app.post("/spacegrounds", function(req, res){
