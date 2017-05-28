@@ -30,7 +30,7 @@
         <% spaceground.comments.forEach(function(comment){ %>
           <div class="row">
             <div class="col-md-12">
-              <strong><%= comment.author%></strong>
+              <strong><%= comment.author.username%></strong>
               <span class="pull-right"> 10days ago</span>
               <p>
                 <%= comment.text %>

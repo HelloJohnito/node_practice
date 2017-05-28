@@ -3,7 +3,7 @@ var router = express.Router({mergeParams: true});
 var Spaceground = require("../models/spaceground");
 var Comment = require("../models/comment");
 
-
+//comments new
 router.get("/new", isLoggedIn, function(req, res){
   Spaceground.findById(req.params.id, function(err, spaceground){
     if(err){
@@ -14,6 +14,7 @@ router.get("/new", isLoggedIn, function(req, res){
   });
 });
 
+//comments create
 router.post("/", isLoggedIn, function(req, res){
   Spaceground.findById(req.params.id, function(err, spaceground){
     if(err){
@@ -24,6 +25,11 @@ router.post("/", isLoggedIn, function(req, res){
         if(err2){
           console.log(err2);
         }else {
+          //add username and id to comment: req.user
+          comment.author.id = req.user._id;
+          comment.author.username = req.user.username;
+          comment.save();
+          console.log(comment.author);
           spaceground.comments.push(comment);
           spaceground.save();
           res.redirect("/spacegrounds/" + spaceground._id);

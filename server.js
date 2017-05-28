@@ -23,7 +23,7 @@ app.use(express.static(__dirname + "/public")); //for css
 app.set("view engine", "ejs");
 
 //seed data
-seedDB();
+// seedDB();
 
 //PASSPORT CONFIG
 app.use(require("express-session")({

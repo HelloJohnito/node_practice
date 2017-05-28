@@ -21,6 +21,7 @@ router.get("/register", function(req, res){
   res.render("auth/register");
 });
 
+//create new user
 router.post("/register", function(req, res){
   var newUser = new User({username: req.body.username});
   User.register(newUser, req.body.password, function(err, user){
@@ -39,6 +40,7 @@ router.get("/login", function(req, res){
   res.render("auth/login");
 });
 
+//login user
 router.post("/login", passport.authenticate("local",
   {
     successRedirect: "/spacegrounds",
