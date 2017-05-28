@@ -1,13 +1,14 @@
-var express       = require("express"),
-    app           = express(),
-    bodyParser    = require("body-parser"),
-    mongoose      = require("mongoose"),
-    passport      = require("passport"),
-    LocalStrategy = require("passport-local"),
-    Spaceground   = require("./models/spaceground"),
-    User          = require("./models/user"),
-    Comment       = require("./models/comment"),
-    seedDB        = require("./seeds");
+var express        = require("express"),
+    app            = express(),
+    bodyParser     = require("body-parser"),
+    mongoose       = require("mongoose"),
+    passport       = require("passport"),
+    LocalStrategy  = require("passport-local"),
+    methodOverride = require("method-override"),
+    Spaceground    = require("./models/spaceground"),
+    User           = require("./models/user"),
+    Comment        = require("./models/comment"),
+    seedDB         = require("./seeds");
 
 var commentRoutes = require('./routes/comment_routes'),
     spacegroundRoutes = require('./routes/spaceground_routes'),
@@ -20,6 +21,7 @@ mongoose.Promise = global.Promise; // gets rid of deprecation error
 mongoose.connect("mongodb://localhost/camp");  //creates the mongodb
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + "/public")); //for css
+app.use(methodOverride("_method"));
 app.set("view engine", "ejs");
 
 //seed data
