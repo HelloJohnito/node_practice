@@ -16,7 +16,7 @@ router.get("/", function(req, res){
 
 //New Route
 // MUST BE IN FRONT OF SHOW ROUTES
-router.get("/new", function(req,res){
+router.get("/new", isLoggedIn, function(req,res){
   res.render("spacegrounds/new");
 });
 
@@ -36,14 +36,19 @@ router.get("/:id", function(req, res){
 
 
 //Create Route
-router.post("/", function(req, res){
+router.post("/", isLoggedIn, function(req, res){
   var name = req.body.name;
   var image = req.body.image;
   var description = req.body.description;
+  var author = {
+    id: req.user._id,
+    username: req.user.username
+  };
   var newSpaceground = {
     name: name,
     image: image,
-    description: description
+    description: description,
+    author: author
   };
 
   //create and push to the database
@@ -55,5 +60,14 @@ router.post("/", function(req, res){
     }
   });
 });
+
+
+//middleware
+function isLoggedIn(req,res,next){
+  if(req.isAuthenticated()){
+    return next();
+  }
+  res.redirect("/login");
+}
 
 module.exports = router;
