@@ -20,7 +20,15 @@
             <p>
               <em>From: <%=spaceground.author.username%></em>
             </p>
-            <a class="btn btn-warning" href="/spacegrounds/<%=spaceground._id%>/edit">Edit</a>
+
+            <%if(currentUser && spaceground.author.id.equals(currentUser._id)){%>
+              <a class="btn btn-warning" href="/spacegrounds/<%=spaceground._id%>/edit">Edit</a>
+
+              <form id="delete-form" action="/spacegrounds/<%=spaceground._id%>?_method=DELETE" method="POST">
+                <button class="btn btn-danger">Delete</button>
+              </form>
+            <% } %>
+
         </div>
       </div>
 

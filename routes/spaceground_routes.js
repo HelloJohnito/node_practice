@@ -55,7 +55,7 @@ router.get("/:id", function(req, res){
     function(err, foundSpaceground){
       if(err){
         console.log(err);
-      }else {
+      } else {
         res.render("spacegrounds/show", {spaceground: foundSpaceground});
       }
     }
@@ -63,27 +63,34 @@ router.get("/:id", function(req, res){
 });
 
 //edit
-router.get("/:id/edit", function(req, res){
+router.get("/:id/edit", checkSpacegroundOwnerShip, function(req, res){
   Spaceground.findById(req.params.id, function(err, foundSpaceground){
-    if(err){
-      res.redirect("/spacegrounds");
-    }else {
-      res.render("spacegrounds/edit", {spaceground: foundSpaceground});
-    }
+    res.render("spacegrounds/edit", {spaceground: foundSpaceground});
   });
 });
 
-
 //update
-router.put("/:id", function(req, res){
+router.put("/:id", checkSpacegroundOwnerShip, function(req, res){
   Spaceground.findByIdAndUpdate(req.params.id, req.body.spaceground, function(err, updatedSpaceground){
     if(err){
       res.redirect("/spacegrounds");
-    }else {
+    } else {
       res.redirect("/spacegrounds/" + req.params.id);
     }
   });
 });
+
+//destroy
+router.delete("/:id", checkSpacegroundOwnerShip, function(req, res){
+  Spaceground.findByIdAndRemove(req.params.id, function(err){
+    if(err){
+      res.redirect("/spacegrounds");
+    } else {
+      res.redirect("/spacegrounds");
+    }
+  });
+});
+
 
 //middleware
 function isLoggedIn(req,res,next){
@@ -91,6 +98,27 @@ function isLoggedIn(req,res,next){
     return next();
   }
   res.redirect("/login");
+}
+
+function checkSpacegroundOwnerShip(req, res ,next){
+  //check if user is logged in
+  if(req.isAuthenticated()){
+    Spaceground.findById(req.params.id, function(err, foundSpaceground){
+      if(err){
+        res.redirect("back");
+      } else {
+        //check if the user owns the spaceground
+        //foundSpaceground.author.id is a mongoose object.
+        if(foundSpaceground.author.id.equals(req.user._id)){
+          next();
+        } else {
+          res.redirect("back");
+        }
+      }
+    });
+  } else{
+    res.redirect("back");
+  }
 }
 
 module.exports = router;
