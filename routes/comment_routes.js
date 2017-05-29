@@ -29,7 +29,6 @@ router.post("/", isLoggedIn, function(req, res){
           comment.author.id = req.user._id;
           comment.author.username = req.user.username;
           comment.save();
-          console.log(comment.author);
           spaceground.comments.push(comment);
           spaceground.save();
           res.redirect("/spacegrounds/" + spaceground._id);
@@ -38,6 +37,44 @@ router.post("/", isLoggedIn, function(req, res){
     }
   });
 });
+
+//Comment edit
+// /spacegrounds/:id/comments/:comment_id/edit
+router.get("/:comment_id/edit", function(req, res){
+  Comment.findById(req.params.comment_id, function(err, foundSpaceground){
+    if(err){
+      res.redirect("back");
+    } else {
+      res.render("comments/edit", {spaceground_id: req.params.id, comment: foundSpaceground});
+    }
+  });
+});
+
+//Comment update
+// /spacegrounds/:id/comments/:comment_id
+router.put("/:comment_id", function(req,res){
+  Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment, function(err, updatedComment){
+    if(err){
+      res.redirect("back");
+    } else {
+      res.redirect("/spacegrounds/" + req.params.id);
+    }
+  });
+});
+
+
+//Comment Destroy
+router.delete("/:comment_id", function(req, res){
+  Comment.findByIdAndRemove(req.params.comment_id, function(err){
+    if(err){
+      res.redirect("back");
+    } else {
+      res.redirect("/spacegrounds/" + req.params.id);
+    }
+  });
+  // res.send("this is the delete page");
+});
+
 
 //middleware
 function isLoggedIn(req,res,next){
