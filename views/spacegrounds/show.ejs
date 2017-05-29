@@ -24,7 +24,7 @@
             <%if(currentUser && spaceground.author.id.equals(currentUser._id)){%>
               <a class="btn btn-warning" href="/spacegrounds/<%=spaceground._id%>/edit">Edit</a>
 
-              <form id="delete-form" action="/spacegrounds/<%=spaceground._id%>?_method=DELETE" method="POST">
+              <form class="delete-form" action="/spacegrounds/<%=spaceground._id%>?_method=DELETE" method="POST">
                 <button class="btn btn-danger">Delete</button>
               </form>
             <% } %>
@@ -52,7 +52,7 @@
                 Edit
               </a>
 
-              <form id="delete-form" action="/spacegrounds/<%=spaceground._id%>/comments/<%=comment._id%>?_method=DELETE" method="post">
+              <form class="delete-form" action="/spacegrounds/<%=spaceground._id%>/comments/<%=comment._id%>?_method=DELETE" method="post">
                 <input class="btn btn-xs btn-danger" type="submit" value="delete">
 
               </form>
