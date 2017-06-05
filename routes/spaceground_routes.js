@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router();
 var Spaceground = require("../models/spaceground");
-
+var middleware = require("../middleware"); // index.js is default
 
 //Index Route
 router.get("/", function(req, res){
@@ -16,7 +16,7 @@ router.get("/", function(req, res){
 
 
 //Create Route
-router.post("/", isLoggedIn, function(req, res){
+router.post("/", middleware.isLoggedIn, function(req, res){
   var name = req.body.name;
   var image = req.body.image;
   var description = req.body.description;
@@ -44,7 +44,7 @@ router.post("/", isLoggedIn, function(req, res){
 
 //New Route
 // MUST BE IN FRONT OF SHOW ROUTES
-router.get("/new", isLoggedIn, function(req,res){
+router.get("/new", middleware.isLoggedIn, function(req,res){
   res.render("spacegrounds/new");
 });
 
@@ -63,14 +63,14 @@ router.get("/:id", function(req, res){
 });
 
 //edit
-router.get("/:id/edit", checkSpacegroundOwnerShip, function(req, res){
+router.get("/:id/edit", middleware.checkSpacegroundOwnership, function(req, res){
   Spaceground.findById(req.params.id, function(err, foundSpaceground){
     res.render("spacegrounds/edit", {spaceground: foundSpaceground});
   });
 });
 
 //update
-router.put("/:id", checkSpacegroundOwnerShip, function(req, res){
+router.put("/:id", middleware.checkSpacegroundOwnership, function(req, res){
   Spaceground.findByIdAndUpdate(req.params.id, req.body.spaceground, function(err, updatedSpaceground){
     if(err){
       res.redirect("/spacegrounds");
@@ -81,7 +81,7 @@ router.put("/:id", checkSpacegroundOwnerShip, function(req, res){
 });
 
 //destroy
-router.delete("/:id", checkSpacegroundOwnerShip, function(req, res){
+router.delete("/:id", middleware.checkSpacegroundOwnership, function(req, res){
   Spaceground.findByIdAndRemove(req.params.id, function(err){
     if(err){
       res.redirect("/spacegrounds");
@@ -91,34 +91,5 @@ router.delete("/:id", checkSpacegroundOwnerShip, function(req, res){
   });
 });
 
-
-//middleware
-function isLoggedIn(req,res,next){
-  if(req.isAuthenticated()){
-    return next();
-  }
-  res.redirect("/login");
-}
-
-function checkSpacegroundOwnerShip(req, res ,next){
-  //check if user is logged in
-  if(req.isAuthenticated()){
-    Spaceground.findById(req.params.id, function(err, foundSpaceground){
-      if(err){
-        res.redirect("back");
-      } else {
-        //check if the user owns the spaceground
-        //foundSpaceground.author.id is a mongoose object.
-        if(foundSpaceground.author.id.equals(req.user._id)){
-          next();
-        } else {
-          res.redirect("back");
-        }
-      }
-    });
-  } else{
-    res.redirect("back");
-  }
-}
 
 module.exports = router;

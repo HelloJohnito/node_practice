@@ -2,9 +2,10 @@ var express = require("express");
 var router = express.Router({mergeParams: true});
 var Spaceground = require("../models/spaceground");
 var Comment = require("../models/comment");
+var middleware = require("../middleware"); // index.js is default
 
 //comments new
-router.get("/new", isLoggedIn, function(req, res){
+router.get("/new", middleware.isLoggedIn, function(req, res){
   Spaceground.findById(req.params.id, function(err, spaceground){
     if(err){
       console.log(err);
@@ -15,7 +16,7 @@ router.get("/new", isLoggedIn, function(req, res){
 });
 
 //comments create
-router.post("/", isLoggedIn, function(req, res){
+router.post("/", middleware.isLoggedIn, function(req, res){
   Spaceground.findById(req.params.id, function(err, spaceground){
     if(err){
       console.log(err);
@@ -40,7 +41,7 @@ router.post("/", isLoggedIn, function(req, res){
 
 //Comment edit
 // /spacegrounds/:id/comments/:comment_id/edit
-router.get("/:comment_id/edit", checkCommentOwnerShip, function(req, res){
+router.get("/:comment_id/edit", middleware.checkCommentOwnership, function(req, res){
   Comment.findById(req.params.comment_id, function(err, foundSpaceground){
     if(err){
       res.redirect("back");
@@ -52,7 +53,7 @@ router.get("/:comment_id/edit", checkCommentOwnerShip, function(req, res){
 
 //Comment update
 // /spacegrounds/:id/comments/:comment_id
-router.put("/:comment_id", checkCommentOwnerShip, function(req,res){
+router.put("/:comment_id", middleware.checkCommentOwnership, function(req,res){
   Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment, function(err, updatedComment){
     if(err){
       res.redirect("back");
@@ -64,7 +65,7 @@ router.put("/:comment_id", checkCommentOwnerShip, function(req,res){
 
 
 //Comment Destroy
-router.delete("/:comment_id", checkCommentOwnerShip, function(req, res){
+router.delete("/:comment_id", middleware.checkCommentOwnership, function(req, res){
   Comment.findByIdAndRemove(req.params.comment_id, function(err){
     if(err){
       res.redirect("back");
@@ -74,37 +75,6 @@ router.delete("/:comment_id", checkCommentOwnerShip, function(req, res){
   });
   // res.send("this is the delete page");
 });
-
-
-//middleware
-function isLoggedIn(req,res,next){
-  if(req.isAuthenticated()){
-    return next();
-  }
-  res.redirect("/login");
-}
-
-
-function checkCommentOwnerShip(req, res ,next) {
-  //check if user is logged in
-  if(req.isAuthenticated()){
-    Comment.findById(req.params.comment_id, function(err, foundComment){
-      if(err){
-        res.redirect("back");
-      } else {
-        //check if the user owns the comment
-        //foundComment.author.id is a mongoose object.
-        if(foundComment.author.id.equals(req.user._id)){
-          next();
-        } else {
-          res.redirect("back");
-        }
-      }
-    });
-  } else{
-    res.redirect("back");
-  }
-}
 
 
 
