@@ -24,6 +24,7 @@ router.post("/", middleware.isLoggedIn, function(req, res){
     }else {
       Comment.create(req.body.comment, function(err2, comment){
         if(err2){
+          req.flash("error", "Something went wrong, please try again.");
           console.log(err2);
         }else {
           //add username and id to comment: req.user
@@ -70,6 +71,7 @@ router.delete("/:comment_id", middleware.checkCommentOwnership, function(req, re
     if(err){
       res.redirect("back");
     } else {
+      req.flash("success", "Successfully deleted comment");
       res.redirect("/spacegrounds/" + req.params.id);
     }
   });

@@ -86,6 +86,7 @@ router.delete("/:id", middleware.checkSpacegroundOwnership, function(req, res){
     if(err){
       res.redirect("/spacegrounds");
     } else {
+      req.flash("success", "Successfully deleted Spaceground");
       res.redirect("/spacegrounds");
     }
   });

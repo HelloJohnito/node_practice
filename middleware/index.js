@@ -8,6 +8,7 @@ middlewareObj.checkSpacegroundOwnership = function(req, res ,next){
   if(req.isAuthenticated()){
     Spaceground.findById(req.params.id, function(err, foundSpaceground){
       if(err){
+        req.flash("error", "Spaceground not found");
         res.redirect("back");
       } else {
         //check if the user owns the spaceground
@@ -15,11 +16,13 @@ middlewareObj.checkSpacegroundOwnership = function(req, res ,next){
         if(foundSpaceground.author.id.equals(req.user._id)){
           next();
         } else {
+          req.flash("error", "Permission Denied.");
           res.redirect("back");
         }
       }
     });
   } else{
+    req.flash("error", "Please login first");
     res.redirect("back");
   }
 };
@@ -37,11 +40,13 @@ middlewareObj.checkCommentOwnership = function(req, res ,next) {
         if(foundComment.author.id.equals(req.user._id)){
           next();
         } else {
+          req.flash("error", "Permission Denied.");
           res.redirect("back");
         }
       }
     });
   } else{
+    req.flash("error", "Please login first");
     res.redirect("back");
   }
 };
@@ -51,7 +56,7 @@ middlewareObj.isLoggedIn= function(req,res,next){
   if(req.isAuthenticated()){
     return next();
   }
-  req.flash("error", "Please Login First!");
+  req.flash("error", "Need to login first");
   res.redirect("/login");
 };
 
