@@ -37,7 +37,7 @@ router.post("/register", function(req, res){
 
 //show login
 router.get("/login", function(req, res){
-  res.render("auth/login", {message: req.flash("error")});
+  res.render("auth/login");
 });
 
 //login user
@@ -51,6 +51,7 @@ router.post("/login", passport.authenticate("local",
 //logout
 router.get("/logout", function(req, res){
   req.logout();
+  req.flash("success", "logged you out!");
   res.redirect("/spacegrounds");
 });
 
